@@ -39,7 +39,8 @@ app.get('/person/:id', (req, res) => {
     // menggunakan array method
     const person = persons.find(el=> el.id === id);
     // console.log(person)
-
+    
+    // validasi apabila id yang di req tidak ada, maka akan muncul message ini
     if (!person) {
         res.status(400).json({
             status: 'failed',
@@ -65,7 +66,8 @@ app.post('/person', (req, res) => {
     // validasi kalau name nya udh ada, maka gk bisa create data baru
     const personName = persons.find(el => el.name === req.body.name);
     console.log(personName)
-
+    
+    // validasi umur harus lebih dari 17 dan jumlah huruf nama lebih dari 5
     const cukupUmur = req.body.age < 17
     const panjangNama = req.body.name.length < 5
 
@@ -132,10 +134,13 @@ app.post('/person', (req, res) => {
 //       });
 //     }
 // });
+
+// put, untuk mengubah data
 app.put('/person/:id', (req, res) => {
     const id = req.params.id * 1;
     const personIndex = persons.findIndex(el => el.id === id);
     const cukupUmur = req.body.age < 17
+    const eyeeColor = req?.body?.eyeColor === "green"
   
     if (personIndex !== -1) {
       persons[personIndex] = { ...persons[personIndex], ...req.body };
@@ -149,6 +154,13 @@ app.put('/person/:id', (req, res) => {
                     status: 'failed',
                     message: `umur ${req.body.age} belum cukup`
                 })
+            } 
+            // validasi, eye color hanya bisa warna hijau
+            else if(!eyeeColor){
+                res.status(400).json({
+                    status: 'failed',
+                    message: `warna ${req.body.eyeColor} bukan hijau`
+                })  
             } else {
                 res.status(200).json({
                     status: 'success',
